@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:stretchColumns="0,1,2,3">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/textView"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="숫자1" />
+
+        <EditText
+            android:id="@+id/edNum01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_span="3"
+            android:inputType="number" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="숫자2" />
+
+        <EditText
+            android:id="@+id/edNum02"
+            android:layout_span="3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <Button
+            android:id="@+id/bAdd4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="더하기" />
+
+        <Button
+            android:id="@+id/bSub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="빼기" />
+
+        <Button
+            android:id="@+id/bMul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="곱하기" />
+
+        <Button
+            android:id="@+id/bDiv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="나누기" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/textView5"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="계산결과:" />
+
+        <TextView
+            android:id="@+id/tvResult"
+            android:layout_span="3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="_" />
+    </TableRow>
+</TableLayout>
