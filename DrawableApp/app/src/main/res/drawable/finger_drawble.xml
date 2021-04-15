@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- 버튼이 눌러질 때, -->
+    <item android:state_pressed="true"
+        android:drawable="@drawable/finger_pressed" />
+<!-- 위의 그림을 표시한다.  -->
+    <item android:drawable="@drawable/finger" />
+
+
+</selector>

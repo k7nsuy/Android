@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
-    ImageView[] iv = new ImageView[3];
     Button btnPre, btnNext;
+    ImageView[] iv = new ImageView[3];
     int[] ids = {R.id.img01,R.id.img02,R.id.img03};
     int i = 0;
 
@@ -31,10 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(View v) {
-                    if (i < iv.length-1) {
+                    if (i < iv.length-1 ) {
                         i++;
                         iv[i].setVisibility(View.VISIBLE);
-
                     }
                 }
             });
