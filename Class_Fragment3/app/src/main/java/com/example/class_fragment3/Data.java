@@ -1,6 +1,7 @@
 package com.example.class_fragment3;
 
 public class Data {
+
     static String[] words = {"액티비티","서비스","방송수신자","내용제공자"};
     static String[] definition = {
             "안드로이드 Activity는 화면에 표시되는 UI 구성을 위해 가장 기본이 되는 요소입니다. 안드로이드 앱은 화면에 UI를 표시하기 위해 최소 하나의 Activity를 가져야 하며, 앱 실행 시 지정된 Activity를 실행하여 사용자에게 UI를 표시하게 됩니다.",

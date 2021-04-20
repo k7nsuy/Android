@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.definition_container,df2)
-                    .addToBackStack(null)
+                    .addToBackStack(null) //백스택에 남아있는 데이터를 메모리에서 지우기 위해
                     .commit();
         }
     }

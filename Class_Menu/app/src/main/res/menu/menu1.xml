@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/itemRed"
+        android:title="빨강" />
+    <item android:id="@+id/itemGreen"
+        android:title="초록" />
+    <item android:id="@+id/itemBlue"
+        android:title="파랑" />
+    <item android:title="버튼크기 변경">
+        <menu>
+            <item android:title="버튼크기 2배 확대"
+                android:id="@+id/subSize" />
+            <item android:title="버튼 사이즈 업"
+                android:id="@+id/subSizeUp" />
+            <item android:title="버튼 사이즈 다운"
+                android:id="@+id/subSizeDown" />
+            <item android:id="@+id/subRotate"
+                android:title="버튼 45도 회전" />
+        </menu>
+    </item>
+
+</menu>
