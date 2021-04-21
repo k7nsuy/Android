@@ -8,14 +8,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.StringTokenizer;
+
+public class MainActivity extends AppCompatActivity {
 
     Button[] btns = new Button[16];
-    int[] btn = {R.id.btn0,R.id.btn1,R.id.btn2,R.id.btn3,
+    int[] btnsIds = {R.id.btn0,R.id.btn1,R.id.btn2,R.id.btn3,
             R.id.btn4,R.id.btn5,R.id.btn6,R.id.btn7,R.id.btn8,
             R.id.btn9,R.id.btnAdd,R.id.btnCancel,R.id.btnDiv,
             R.id.btnMul,R.id.btnResult,R.id.btnSub};
     TextView tView;
+    String str="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,18 +29,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tView = findViewById(R.id.tView);
 
         for(int i = 0; i < btns.length; i++) {
-            btns[i] = findViewById(btn[i]);
-            btns[i].setOnClickListener(this);
+            final int idx = i;
+            btns[i] = findViewById(btnsIds[i]);
+            btns[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String btnStr=btns[idx].getText().toString();
+                    if (btnStr.equals("=")){
+                        int result=0;
+                        StringTokenizer st=new StringTokenizer(str,"+-*/",true);
+                        int num1=Integer.parseInt(st.nextToken());
+                        String op=st.nextToken();
+                        int num2=Integer.parseInt(st.nextToken());
+                        switch (op){
+                            case "+":result=num1+num2;break;
+                            case "-":result=num1-num2;break;
+                            case "*":result=num1*num2;break;
+                            case "/":result=num1/num2;break;
+                        }
+                        str=Integer.toString(result);
+                        tView.setText(str);
+                    }else if(btnStr.equals("c")){
+                        str="";
+                        tView.setText(str);
+
+                    }else{
+                        str+=btns[idx].getText().toString();
+                        tView.setText(str);
+                    }
+                }
+            });
             }
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        if(v.getId() == R.id.btn0) {
-            tView.setText("0");
-        } else if (v.getId() == R.id.btn1) {
-            tView.setText("1");
-        }
     }
 }
