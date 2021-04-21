@@ -23,6 +23,8 @@ public class SmsActivity extends AppCompatActivity {
         editDate = findViewById(R.id.editDate);
         editContent = findViewById(R.id.editContent);
         btn = findViewById(R.id.btn);
+        Intent intent = getIntent();
+        processIntent(intent);
     }
 
     @Override
@@ -34,7 +36,8 @@ public class SmsActivity extends AppCompatActivity {
     private void processIntent(Intent intent) {
         if (intent != null) {
             String sender = intent.getStringExtra("sender");
-            String contents = intent.getStringExtra("content");
+            String contents = intent.getStringExtra("contents");
+            // 날짜를 String format 으로 바꿔줘야 함.
             String receivedDate = intent.getStringExtra("receivedDate");
             editNumber.setText(sender);
             editContent.setText(contents);

@@ -6,7 +6,9 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class MyService extends Service {
+
     final static String TAG = "MyService";
+
     public MyService() {
     }
 
@@ -57,7 +59,7 @@ public class MyService extends Service {
 
         Intent showIntent = new Intent(getApplicationContext(),MainActivity.class);
         showIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| // 새로운 액티비티 작업
-                Intent.FLAG_ACTIVITY_SINGLE_TOP|
+                Intent.FLAG_ACTIVITY_SINGLE_TOP| // activity 가 충돌하는 것을 방지
                 Intent.FLAG_ACTIVITY_CLEAR_TOP);
         // clear top => mainActivity 로 돌아가기 전 실행 명령어
         showIntent.putExtra("command",command + " from service");
