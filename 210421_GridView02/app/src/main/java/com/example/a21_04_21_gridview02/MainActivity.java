@@ -19,13 +19,13 @@ public class MainActivity extends AppCompatActivity {
         gridView = findViewById(R.id.gridView);
         adapter = new MyGridAdapter(this);
         gridView.setAdapter(adapter);
-
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         int point = intent.getIntExtra("point",0);
-        adapter.setPoint(point);
+        int position = intent.getIntExtra("position",0);
+        adapter.setPoint(point,position);
         adapter.notifyDataSetChanged();
         super.onNewIntent(intent);
     }

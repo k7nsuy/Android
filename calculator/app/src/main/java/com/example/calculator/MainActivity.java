@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             btns[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     String btnStr=btns[idx].getText().toString();
                     if (btnStr.equals("=")){
                         int result=0;

@@ -30,6 +30,7 @@ public class MovieActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int id = intent.getIntExtra("imgIds",0);
         String title = intent.getStringExtra("titles");
+        int position = intent.getIntExtra("position",0);
 
         mvTitle.setText(title);
         mvPoster.setImageResource(id);
@@ -39,6 +40,7 @@ public class MovieActivity extends AppCompatActivity {
                 int point = Integer.parseInt(mvEdit.getText().toString());
                 Intent newIntent = new Intent(getApplicationContext(),MainActivity.class);
                 newIntent.putExtra("point",point);
+                newIntent.putExtra("position",position);
                 newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|
                         Intent.FLAG_ACTIVITY_SINGLE_TOP|
                         Intent.FLAG_ACTIVITY_CLEAR_TOP);
