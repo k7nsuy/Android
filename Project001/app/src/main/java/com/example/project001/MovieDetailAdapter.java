@@ -89,7 +89,7 @@ implements OnPosterClickListener {
             tv1.setText(item.actor);
             tv1.setText(item.director);
 
-            iv1.setImageResource(Integer.parseInt(String.valueOf(item.imgIds)));
+            iv1.setImageResource(item.getImgIds());
         }
     }
 
