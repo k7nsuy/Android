@@ -86,8 +86,6 @@ implements OnPosterClickListener {
         }
         public void setItem(MovieDetail item) {
             tv1.setText(item.title);
-            tv1.setText(item.actor);
-            tv1.setText(item.director);
 
             iv1.setImageResource(item.getImgIds());
         }

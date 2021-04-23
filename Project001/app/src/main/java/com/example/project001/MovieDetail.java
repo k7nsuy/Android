@@ -8,23 +8,23 @@ public class MovieDetail implements Serializable {
     String director;
     String actor;
 
-    int[] imgIds;
+    int imgIds;
 
     public MovieDetail() {
     }
 
-    public MovieDetail(String title, String director, String actor, int[] imgIds) {
+    public MovieDetail(String title, String director, String actor, int imgIds) {
         this.title = title;
         this.director = director;
         this.actor = actor;
         this.imgIds = imgIds;
     }
 
-    public int[] getImgIds() {
+    public int getImgIds() {
         return imgIds;
     }
 
-    public void setImgIds(int[] imgIds) {
+    public void setImgIds(int imgIds) {
         this.imgIds = imgIds;
     }
 
