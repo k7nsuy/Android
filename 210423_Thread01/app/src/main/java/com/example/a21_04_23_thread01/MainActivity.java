@@ -44,11 +44,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         processThread = new ProcessThread();
-        handler = new MainHandler();
+        handler = new MainHandler(); // thread 를 main thread 로 보내 줄 때 handler 사용.
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Thread thread = new BackgroundThread(); 상속받은 thread 로 작업할 때,
                 Thread thread = new Thread(new BackgroundThread());
                 thread.start();
             }
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            Bundle bundle = msg.getData();
+            Bundle bundle = msg.getData(); // 스레드로 부터 보낸 데이터를 받아 번들에 저장
             int value = bundle.getInt("value");
             tv.setText("value 값 : " + value);
         }
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             super.run();
-            Looper.prepare();
+            Looper.prepare(); // 프로세스 핸들러를 통해 메세지를 받은것을 Looper를 통해서 계속 확인
             Looper.loop();
         }
 
@@ -107,11 +108,11 @@ public class MainActivity extends AppCompatActivity {
 //                    tv.setText("value : " + value);
                     value++;
 
-                    Message msg = handler.obtainMessage();
+                    Message msg = handler.obtainMessage(); // msg 객체 만들어
                     Bundle bundle = new Bundle();
                     bundle.putInt("value",value);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
+                    msg.setData(bundle); // mas 객체에 번들을 실어서
+                    handler.sendMessage(msg);  // 핸들러를 통해 메인 헨들러에 메세지를 전송.
                 }
             }
         }
