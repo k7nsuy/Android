@@ -12,6 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String TABLE_NAME = "emp";
     public static String NAME = "employee.db";
     public static int VERSION = 1;
+
     public DatabaseHelper(@Nullable Context context) {
         super(context, NAME, null, VERSION);
     }

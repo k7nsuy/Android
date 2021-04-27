@@ -56,10 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void dataInsert() {
         println("dataInsert() 호출");
-        database = dbHelper.getWritableDatabase();
+
+        database = dbHelper.getWritableDatabase(); // 쓰기 가능한 db를 얻어온다.
+
         String name = edName.getText().toString();
         int age = Integer.parseInt(edAge.getText().toString());
         String phone = edPhone.getText().toString();
+
         ContentValues values = new ContentValues();
         values.put("name",name);
         values.put("age",age);
@@ -87,17 +90,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void dataSearch() {
-
-        database = dbHelper.getReadableDatabase();
+        println("dataSearch() 호출");
+        database = dbHelper.getWritableDatabase();
         String name = edName.getText().toString();
         String sql = "select * from " + dbHelper.TABLE_NAME +
-                " where name='" + name + "'";
+                " where name='"+name+"'";
         Cursor cursor = database.rawQuery(sql,null);
         cursor.moveToNext();
         edName.setText(cursor.getString(1));
-        edAge.setText(cursor.getInt(2));
+        edAge.setText(cursor.getInt(2)+"");
         edPhone.setText(cursor.getString(3));
-
     }
 
     private void dataUpgrade() {
