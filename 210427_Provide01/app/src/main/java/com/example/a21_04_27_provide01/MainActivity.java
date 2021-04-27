@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         tv = findViewById(R.id.tvResult);
-
     }
 
     public void mOnClicked(View view) {
@@ -28,15 +27,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btnInsert:
                 insertPerson();
                 break;
-
             case R.id.btnQuery:
                 queryPerson();
                 break;
-
             case R.id.btnUpdate:
                 updatePerson();
                 break;
-
             case R.id.btnDelete:
                 deletePerson();
                 break;
@@ -44,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertPerson() {
-        String uriString = "content://com.example.a21_04_27_provide01/person";
+        String uriString ="content://com.example.a21_04_27_provide01/person";
         Uri uri = new Uri.Builder().build().parse(uriString);
         Cursor cursor = getContentResolver().query(uri,null,null,null,
                 null);
@@ -64,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void queryPerson() {
         try {
-            String uriString = "content://com.example.a21_04_27_provide01/person";
+            String uriString ="content://com.example.a21_04_27_provide01/person";
             Uri uri = new Uri.Builder().build().parse(uriString);
             String[] columns = new String[]{"name","age","mobile"};
             Cursor cursor = getContentResolver().query(uri,columns,null,null,
@@ -85,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updatePerson() {
-        String uriString = "content://com.example.a21_04_27_provide01/person";
+        String uriString ="content://com.example.a21_04_27_provide01/person";
         Uri uri = new Uri.Builder().build().parse(uriString);
         String selection = "name=?";
         String [] selectionArgs = new String[]{"홍길동"};
@@ -97,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deletePerson() {
-        String uriString = "content://com.example.a21_04_27_provide01/person";
+        String uriString ="content://com.example.a21_04_27_provide01/person";
         Uri uri = new Uri.Builder().build().parse(uriString);
         String selection = "name=?";
         String[] selectionArgs = new String[]{"홍길동"};
