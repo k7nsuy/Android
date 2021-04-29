@@ -1,0 +1,15 @@
+1. build.gradle(Module) 에서
+ implementation 'com.github.pedroSG94:AutoPermissions:1.0.3'
+ dependencies 추가.
+
+ allprojects {
+     repositories {
+         maven { url 'https://jitpack.io' }
+     }
+ }
+    추가.
+
+2. AndroidManifest 에서
+ <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+ 유저 권한 추가.
+

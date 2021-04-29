@@ -1,0 +1,23 @@
+1. my sql root 계정에 접속
+password = root
+
+2. users and privilleges 에서
+add account
+login name, password 입력 후
+
+3. MySQL Connections 에서 +클릭
+Connection Name,
+Store in Vault ... 에서 password입력 후
+Test Connection 후 OK
+
+4. Schemas
+Create new Schemas(아이콘)
+Name,Charset설정
+utf8,utf8_bin
+
+5. Table
+스키마 더블클릭 후 테이블 생성(아이콘)
+작성 후 finish
+
+
+
