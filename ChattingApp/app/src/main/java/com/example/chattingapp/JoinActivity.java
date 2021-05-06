@@ -16,7 +16,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.chattingapp.model.User;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +77,7 @@ public class JoinActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (email.getText().toString() == null || password.getText().toString() == null
-                || name.getText().toString() == null) {
+                || name.getText().toString() == null || imageUri == null) {
                     return;
                 }
 
@@ -85,21 +88,54 @@ public class JoinActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull @org.jetbrains.annotations.NotNull Task<AuthResult> task) {
 
-                                String uid = task.getResult().getUser().getUid();
-                                FirebaseStorage.getInstance().getReference().child("userImages").child(uid)
-                                        .putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                final String uid = task.getResult().getUser().getUid();
+                                final StorageReference profileImageRef =
+                                FirebaseStorage.getInstance().getReference().child("userImages").child(uid);
+                                profileImageRef.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                                     @Override
-                                    public void onComplete(@NonNull @NotNull Task<UploadTask.TaskSnapshot> task) {
-                                        String imageUrl = task.getResult().getUploadSessionUri().toString();
+                                    public Task<Uri> then(@NonNull @NotNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                        if (!task.isSuccessful()) {
+                                            throw task.getException();
+                                        }
+                                        return profileImageRef.getDownloadUrl();
+                                    }
+                                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull @NotNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri downUri = task.getResult();
+                                            String imageUri = downUri.toString();
 
-                                        User user = new User();
-                                        user.userName = name.getText().toString();
-                                        user.profileImageUrl = imageUrl;
+                                            User user = new User();
+                                            user.userName = name.getText().toString();
+                                            user.profileImageUrl = imageUri;
+                                            user.uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                                        FirebaseDatabase.getInstance().getReference().child("Users").child(uid)
-                                                .setValue(user);
+                                            FirebaseDatabase.getInstance().getReference().child("users").child(uid)
+                                                    .setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Intent intent = new Intent(JoinActivity.this,LoginActivity.class);
+                                                    startActivity(intent);
+                                                    JoinActivity.this.finish();
+                                                }
+                                            });
+                                        }
                                     }
                                 });
+//                                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull @NotNull Task<UploadTask.TaskSnapshot> task) {
+//                                        String imageUrl = task.getResult().getUploadSessionUri().toString();
+//
+//                                        User user = new User();
+//                                        user.userName = name.getText().toString();
+//                                        user.profileImageUrl = imageUrl;
+//
+//                                        FirebaseDatabase.getInstance().getReference().child("Users").child(uid)
+//                                                .setValue(user);
+//                                    }
+//                                });
                             }
                         });
             }
