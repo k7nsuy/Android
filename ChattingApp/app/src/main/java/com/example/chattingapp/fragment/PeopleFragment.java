@@ -21,6 +21,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.chattingapp.R;
 import com.example.chattingapp.chat.MessageActivity;
 import com.example.chattingapp.model.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -52,12 +53,20 @@ public class PeopleFragment extends Fragment {
 
         public PeopleFragmentRecyclerViewAdapter() {
             user = new ArrayList<>();
+            final String myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             FirebaseDatabase.getInstance().getReference().child("users").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
                     user.clear();
+
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        user.add(snapshot.getValue(User.class));
+
+                        User user2 = snapshot.getValue(User.class);
+
+                        if (user2.uid.equals(myUid)) {
+                            continue;
+                        }
+                        user.add(user2);
                     }
                     notifyDataSetChanged();
                 }
