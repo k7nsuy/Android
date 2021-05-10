@@ -12,7 +12,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdReceiver;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -52,6 +51,6 @@ public class MainActivity extends AppCompatActivity {
         Map<String,Object> map = new HashMap<>();
         map.put("pushToken",token);
 
-        FirebaseDatabase.getInstance().getReference().child("users").child(uid);
+        FirebaseDatabase.getInstance().getReference().child("users").child(uid).updateChildren(map);
     }
 }

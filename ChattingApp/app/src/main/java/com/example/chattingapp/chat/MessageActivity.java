@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.chattingapp.R;
 import com.example.chattingapp.model.Chat;
+import com.example.chattingapp.model.NotificationModel;
 import com.example.chattingapp.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,14 +31,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -51,6 +62,8 @@ public class MessageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+    private User destinationUser;
 
 
     @Override
@@ -90,6 +103,7 @@ public class MessageActivity extends AppCompatActivity {
                             .child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull @NotNull Task<Void> task) {
+                            sendGcm();
                             editText.setText("");
                         }
                     });
@@ -98,6 +112,36 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
         checkChatRoom();
+    }
+
+    void sendGcm() {
+        Gson gson = new Gson();
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.to = destinationUser.pushToken;
+        notificationModel.notification.title = "보낸이 아이디";
+        notificationModel.notification.text = editText.getText().toString();
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"),
+                gson.toJson(notificationModel));
+        Request request = new Request.Builder()
+                .header("Content-Type","application/json")
+                .addHeader("Authorization","AAAAxu7ei7A:APA91bEzX3MvTl3MNKFJr6Mqep1EoLiPqNAJ6K5NNSXOlFfqqDgU0SgeAv8MMNRBA9p3ZOtVipnSY6gAsqVAVwFuhfEVQeXpd8yFLpLIR0afLVJeD3e8HcrC2rk8WRmAdQEdMDn2_O9U")
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody)
+                .build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+            }
+        });
     }
 
     void checkChatRoom() {
