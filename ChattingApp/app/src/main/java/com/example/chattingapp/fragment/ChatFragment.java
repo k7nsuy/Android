@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.chattingapp.R;
+import com.example.chattingapp.chat.GroupMessageActivity;
 import com.example.chattingapp.chat.MessageActivity;
 import com.example.chattingapp.model.Chat;
 import com.example.chattingapp.model.User;
@@ -127,26 +128,34 @@ public class ChatFragment extends Fragment {
             // 메세지를 내림차순으로 정렬 후 마지막 메세지의 키값을 가져옴.
             Map<String,Chat.Comment> commentMap = new TreeMap<>(Collections.reverseOrder());
             commentMap.putAll(chat.get(position).comments);
+            if (commentMap.keySet().toArray().length > 0 ) {
             String lastMessageKey = (String) commentMap.keySet().toArray()[0];
             customerViewHolder.textView_lastMessage.setText(chat.get(position).comments.
                     get(lastMessageKey).message);
-            customerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), MessageActivity.class);
-                    intent.putExtra("destinationUid",destinationUsers.get(position));
 
-                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(v.getContext(),
-                            R.anim.fromright,R.anim.toleft);
-                    startActivity(intent,activityOptions.toBundle());
-                }
-            });
             // TimeStamp
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 
             long unixTime = (long )chat.get(position).comments.get(lastMessageKey).timestmap;
             Date date = new Date(unixTime);
             customerViewHolder.textView_timeStamp.setText(simpleDateFormat.format(date));
+            }
+            customerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = null;
+                    if (chat.get(position).users.size() > 2) {
+                         intent = new Intent(v.getContext(), GroupMessageActivity.class);
+                    } else {
+                    intent = new Intent(v.getContext(), MessageActivity.class);
+                    intent.putExtra("destinationUid",destinationUsers.get(position));
+                    }
+
+                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(v.getContext(),
+                            R.anim.fromright,R.anim.toleft);
+                    startActivity(intent,activityOptions.toBundle());
+                }
+            });
         }
 
         @Override

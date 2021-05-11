@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.chattingapp.fragment.AccountFragment;
 import com.example.chattingapp.fragment.ChatFragment;
 import com.example.chattingapp.fragment.PeopleFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -38,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_chat:
                         getFragmentManager().beginTransaction().replace(R.id.mainActivity_frameLayout,
                                 new ChatFragment()).commit();
+                        return true;
+                    case R.id.action_account:
+                        getFragmentManager().beginTransaction().replace(R.id.mainActivity_frameLayout,
+                                new AccountFragment()).commit();
                         return true;
                 }
                 return false;
