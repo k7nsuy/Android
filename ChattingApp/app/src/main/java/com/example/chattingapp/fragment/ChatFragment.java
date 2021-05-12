@@ -59,8 +59,9 @@ public class ChatFragment extends Fragment {
 
     class ChatRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private String uid;
         private List<Chat> chat = new ArrayList<>();
+        private List<String> keys = new ArrayList<>();
+        private String uid;
         private ArrayList<String> destinationUsers = new ArrayList<>();
 
         public ChatRecyclerViewAdapter() {
@@ -74,6 +75,7 @@ public class ChatFragment extends Fragment {
                     chat.clear();
                     for (DataSnapshot item : snapshot.getChildren()) {
                         chat.add(item.getValue(Chat.class));
+                        keys.add(item.getKey());
                     }
                     notifyDataSetChanged();
                 }
@@ -146,6 +148,7 @@ public class ChatFragment extends Fragment {
                     Intent intent = null;
                     if (chat.get(position).users.size() > 2) {
                          intent = new Intent(v.getContext(), GroupMessageActivity.class);
+                         intent.putExtra("destinationUid",destinationUsers.get(position));
                     } else {
                     intent = new Intent(v.getContext(), MessageActivity.class);
                     intent.putExtra("destinationUid",destinationUsers.get(position));

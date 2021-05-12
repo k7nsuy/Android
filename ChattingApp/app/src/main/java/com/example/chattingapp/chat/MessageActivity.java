@@ -58,6 +58,8 @@ public class MessageActivity extends AppCompatActivity {
     private Button button;
     private EditText editText;
 
+    int peopleCount = 0;
+
     private String uid;
     private String destinationUid;
     private String chatRoomUid;
@@ -67,7 +69,6 @@ public class MessageActivity extends AppCompatActivity {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
     private User destinationUser;
-
     private DatabaseReference databaseReference;
     private ValueEventListener valueEventListener;
 
@@ -108,7 +109,7 @@ public class MessageActivity extends AppCompatActivity {
                             .child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull @NotNull Task<Void> task) {
-//                            sendGcm();
+                            sendGcm();
                             editText.setText("");
                         }
                     });
@@ -118,35 +119,35 @@ public class MessageActivity extends AppCompatActivity {
         checkChatRoom();
     }
 
-//    void sendGcm() {
-//        Gson gson = new Gson();
-//
-//        NotificationModel notificationModel = new NotificationModel();
-//        notificationModel.to = destinationUser.pushToken;
-//        notificationModel.notification.title = "보낸이 아이디";
-//        notificationModel.notification.text = editText.getText().toString();
-//
-//        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"),
-//                gson.toJson(notificationModel));
-//        Request request = new Request.Builder()
-//                .header("Content-Type","application/json")
-//                .addHeader("Authorization","AAAAxu7ei7A:APA91bEzX3MvTl3MNKFJr6Mqep1EoLiPqNAJ6K5NNSXOlFfqqDgU0SgeAv8MMNRBA9p3ZOtVipnSY6gAsqVAVwFuhfEVQeXpd8yFLpLIR0afLVJeD3e8HcrC2rk8WRmAdQEdMDn2_O9U")
-//                .url("https://fcm.googleapis.com/fcm/send")
-//                .post(requestBody)
-//                .build();
-//        OkHttpClient okHttpClient = new OkHttpClient();
-//        okHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//
-//            }
-//        });
-//    }
+    void sendGcm() {
+        Gson gson = new Gson();
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.to = destinationUser.pushToken;
+        notificationModel.notification.title = "보낸이 아이디";
+        notificationModel.notification.text = editText.getText().toString();
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; UTF-8"),
+                gson.toJson(notificationModel));
+        Request request = new Request.Builder()
+                .header("Content-Type","application/json; UTF-8")
+                .addHeader("Authorization","AAAAxu7ei7A:APA91bEzX3MvTl3MNKFJr6Mqep1EoLiPqNAJ6K5NNSXOlFfqqDgU0SgeAv8MMNRBA9p3ZOtVipnSY6gAsqVAVwFuhfEVQeXpd8yFLpLIR0afLVJeD3e8HcrC2rk8WRmAdQEdMDn2_O9U")
+                .url("https://fcm.googleapis.com/v1/ChattingApp/chattingapp-95354/messages:send")
+                .post(requestBody)
+                .build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+            }
+        });
+    }
 
     void checkChatRoom() {
         FirebaseDatabase.getInstance().getReference().child("chatrooms").orderByChild("users/" + uid)
@@ -155,7 +156,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot item : snapshot.getChildren()) {
                     Chat chat = item.getValue(Chat.class);
-                    if (chat != null && chat.users.containsKey(destinationUid)) {
+                    if (chat.users.containsKey(destinationUid) && chat.users.size() == 2) {
                         chatRoomUid = item.getKey();
                         button.setEnabled(true);
                         recyclerView.setLayoutManager(new LinearLayoutManager(MessageActivity.this));
@@ -221,7 +222,6 @@ public class MessageActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                     // 메세지가 갱신
                                     notifyDataSetChanged();
-
                                     recyclerView.scrollToPosition(comments.size() - 1);
                                 }
                             });
@@ -277,27 +277,37 @@ public class MessageActivity extends AppCompatActivity {
             messageViewHolder.textView_timeStamp.setText(time);
         }
 
-        void setReadCounter(int position,TextView textView) {
-            FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid)
-                    .child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Map<String,Boolean> users = (Map<String, Boolean>) snapshot.getValue();
-
-                    int count = users.size() - comments.get(position).readUsers.size();
-                    if (count > 0) {
-                        textView.setVisibility(View.VISIBLE);
-                        textView.setText(String.valueOf(count));
-                    } else {
-                        textView.setVisibility(View.INVISIBLE);
+        void setReadCounter(final int position,final TextView textView) {
+            if (peopleCount == 0) {
+                FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid)
+                        .child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Map<String, Boolean> users = (Map<String, Boolean>) snapshot.getValue();
+                        peopleCount = users.size();
+                        int count = peopleCount - comments.get(position).readUsers.size();
+                        if (count > 0) {
+                            textView.setVisibility(View.VISIBLE);
+                            textView.setText(String.valueOf(count));
+                        } else {
+                            textView.setVisibility(View.INVISIBLE);
+                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
+                    }
+                });
+            } else {
+                int count = peopleCount - comments.get(position).readUsers.size();
+                if (count > 0) {
+                    textView.setVisibility(View.VISIBLE);
+                    textView.setText(String.valueOf(count));
+                } else {
+                    textView.setVisibility(View.INVISIBLE);
                 }
-            });
+            }
         }
 
         @Override
