@@ -73,7 +73,7 @@ public class GroupMessageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_message);
-        destinationRoom = getIntent().getStringExtra(destinationRoom);
+        destinationRoom = getIntent().getStringExtra("destinationRoom");
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         editText = findViewById(R.id.groupMessageActivity_editText);
 
@@ -119,7 +119,7 @@ public class GroupMessageActivity extends AppCompatActivity {
                                     if (item.equals(uid)) {
                                         continue;
                                     }
-                                    sendGcm(users.get(item).pushToken);
+//                                    sendGcm(users.get(item).pushToken);
                                 }
                                 editText.setText("");
                             }
@@ -135,35 +135,35 @@ public class GroupMessageActivity extends AppCompatActivity {
         });
     }
 
-    void sendGcm(String pushToken) {
-        Gson gson = new Gson();
-
-        NotificationModel notificationModel = new NotificationModel();
-        notificationModel.to = pushToken;
-        notificationModel.notification.title = "보낸이 아이디";
-        notificationModel.notification.text = editText.getText().toString();
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; UTF-8"),
-                gson.toJson(notificationModel));
-        Request request = new Request.Builder()
-                .header("Content-Type","application/json; UTF-8")
-                .addHeader("Authorization","AAAAxu7ei7A:APA91bEzX3MvTl3MNKFJr6Mqep1EoLiPqNAJ6K5NNSXOlFfqqDgU0SgeAv8MMNRBA9p3ZOtVipnSY6gAsqVAVwFuhfEVQeXpd8yFLpLIR0afLVJeD3e8HcrC2rk8WRmAdQEdMDn2_O9U")
-                .url("https://fcm.googleapis.com/v1/ChattingApp/chattingapp-95354/messages:send")
-                .post(requestBody)
-                .build();
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
-            }
-        });
-    }
+//    void sendGcm(String pushToken) {
+//        Gson gson = new Gson();
+//
+//        NotificationModel notificationModel = new NotificationModel();
+//        notificationModel.to = pushToken;
+//        notificationModel.notification.title = "보낸이 아이디";
+//        notificationModel.notification.text = editText.getText().toString();
+//
+//        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; UTF-8"),
+//                gson.toJson(notificationModel));
+//        Request request = new Request.Builder()
+//                .header("Content-Type","application/json; UTF-8")
+//                .addHeader("Authorization","AAAAxu7ei7A:APA91bEzX3MvTl3MNKFJr6Mqep1EoLiPqNAJ6K5NNSXOlFfqqDgU0SgeAv8MMNRBA9p3ZOtVipnSY6gAsqVAVwFuhfEVQeXpd8yFLpLIR0afLVJeD3e8HcrC2rk8WRmAdQEdMDn2_O9U")
+//                .url("https://fcm.googleapis.com/v1/ChattingApp/chattingapp-95354/messages:send")
+//                .post(requestBody)
+//                .build();
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//        okHttpClient.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//
+//            }
+//        });
+//    }
 
     class groupMessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -184,12 +184,13 @@ public class GroupMessageActivity extends AppCompatActivity {
                     for (DataSnapshot item : snapshot.getChildren()) {
                         String key = item.getKey();
                         Chat.Comment comment_origin = item.getValue(Chat.Comment.class);
-                        Chat.Comment comment_motify = item.getValue(Chat.Comment.class);
-                        comment_motify.readUsers.put(uid,true);
+                        Chat.Comment comment_notify = item.getValue(Chat.Comment.class);
+                        comment_notify.readUsers.put(uid,true);
 
-                        readUsersMap.put(key,comment_motify);
+                        readUsersMap.put(key,comment_notify);
                         comments.add(comment_origin);
                     }
+
                     FirebaseDatabase.getInstance().getReference().child("chatrooms")
                             .child(destinationRoom).child("comments").updateChildren(readUsersMap)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -197,7 +198,6 @@ public class GroupMessageActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                     // 메세지가 갱신
                                     notifyDataSetChanged();
-
                                     recyclerView.scrollToPosition(comments.size() - 1);
                                 }
                             });

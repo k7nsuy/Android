@@ -148,7 +148,7 @@ public class ChatFragment extends Fragment {
                     Intent intent = null;
                     if (chat.get(position).users.size() > 2) {
                          intent = new Intent(v.getContext(), GroupMessageActivity.class);
-                         intent.putExtra("destinationUid",destinationUsers.get(position));
+                         intent.putExtra("destinationRoom",keys.get(position));
                     } else {
                     intent = new Intent(v.getContext(), MessageActivity.class);
                     intent.putExtra("destinationUid",destinationUsers.get(position));

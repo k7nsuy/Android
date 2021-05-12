@@ -109,7 +109,7 @@ public class MessageActivity extends AppCompatActivity {
                             .child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull @NotNull Task<Void> task) {
-                            sendGcm();
+//                            sendGcm();
                             editText.setText("");
                         }
                     });
@@ -119,35 +119,35 @@ public class MessageActivity extends AppCompatActivity {
         checkChatRoom();
     }
 
-    void sendGcm() {
-        Gson gson = new Gson();
-
-        NotificationModel notificationModel = new NotificationModel();
-        notificationModel.to = destinationUser.pushToken;
-        notificationModel.notification.title = "보낸이 아이디";
-        notificationModel.notification.text = editText.getText().toString();
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; UTF-8"),
-                gson.toJson(notificationModel));
-        Request request = new Request.Builder()
-                .header("Content-Type","application/json; UTF-8")
-                .addHeader("Authorization","AAAAxu7ei7A:APA91bEzX3MvTl3MNKFJr6Mqep1EoLiPqNAJ6K5NNSXOlFfqqDgU0SgeAv8MMNRBA9p3ZOtVipnSY6gAsqVAVwFuhfEVQeXpd8yFLpLIR0afLVJeD3e8HcrC2rk8WRmAdQEdMDn2_O9U")
-                .url("https://fcm.googleapis.com/v1/ChattingApp/chattingapp-95354/messages:send")
-                .post(requestBody)
-                .build();
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
-            }
-        });
-    }
+//    void sendGcm() {
+//        Gson gson = new Gson();
+//
+//        NotificationModel notificationModel = new NotificationModel();
+//        notificationModel.to = destinationUser.pushToken;
+//        notificationModel.notification.title = "보낸이 아이디";
+//        notificationModel.notification.text = editText.getText().toString();
+//
+//        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; UTF-8"),
+//                gson.toJson(notificationModel));
+//        Request request = new Request.Builder()
+//                .header("Content-Type","application/json; UTF-8")
+//                .addHeader("Authorization","AAAAxu7ei7A:APA91bEzX3MvTl3MNKFJr6Mqep1EoLiPqNAJ6K5NNSXOlFfqqDgU0SgeAv8MMNRBA9p3ZOtVipnSY6gAsqVAVwFuhfEVQeXpd8yFLpLIR0afLVJeD3e8HcrC2rk8WRmAdQEdMDn2_O9U")
+//                .url("https://fcm.googleapis.com/v1/ChattingApp/chattingapp-95354/messages:send")
+//                .post(requestBody)
+//                .build();
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//        okHttpClient.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//
+//            }
+//        });
+//    }
 
     void checkChatRoom() {
         FirebaseDatabase.getInstance().getReference().child("chatrooms").orderByChild("users/" + uid)
@@ -197,8 +197,8 @@ public class MessageActivity extends AppCompatActivity {
         }
 
         void getMessageList() {
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid)
-                    .child("comments");
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("chatrooms")
+                    .child(chatRoomUid).child("comments");
 
             valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -209,12 +209,14 @@ public class MessageActivity extends AppCompatActivity {
                     for (DataSnapshot item : snapshot.getChildren()) {
                         String key = item.getKey();
                         Chat.Comment comment_origin = item.getValue(Chat.Comment.class);
-                        Chat.Comment comment_motify = item.getValue(Chat.Comment.class);
-                        comment_motify.readUsers.put(uid,true);
+                        Chat.Comment comment_notify = item.getValue(Chat.Comment.class);
+                        comment_notify.readUsers.put(uid,true);
 
-                        readUsersMap.put(key,comment_motify);
+                        readUsersMap.put(key,comment_notify);
                         comments.add(comment_origin);
                     }
+                    if (!comments.get(comments.size() -1).readUsers.containsKey(uid)) {
+
                     FirebaseDatabase.getInstance().getReference().child("chatrooms")
                             .child(chatRoomUid).child("comments").updateChildren(readUsersMap)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -225,6 +227,10 @@ public class MessageActivity extends AppCompatActivity {
                                     recyclerView.scrollToPosition(comments.size() - 1);
                                 }
                             });
+                    } else {
+                        notifyDataSetChanged();
+                        recyclerView.scrollToPosition(comments.size() - 1);
+                    }
                 }
 
                 @Override

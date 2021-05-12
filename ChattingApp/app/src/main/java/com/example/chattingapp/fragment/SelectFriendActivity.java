@@ -46,6 +46,7 @@ public class SelectFriendActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.selectFriendActivity_recyclerView);
         recyclerView.setAdapter(new SelectFriendRecyclerViewAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         Button button = findViewById(R.id.selectFriendActivity_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
