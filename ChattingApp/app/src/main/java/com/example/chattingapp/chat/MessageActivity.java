@@ -215,7 +215,6 @@ public class MessageActivity extends AppCompatActivity {
                         readUsersMap.put(key,comment_notify);
                         comments.add(comment_origin);
                     }
-                    if (!comments.get(comments.size() -1).readUsers.containsKey(uid)) {
 
                     FirebaseDatabase.getInstance().getReference().child("chatrooms")
                             .child(chatRoomUid).child("comments").updateChildren(readUsersMap)
@@ -227,10 +226,6 @@ public class MessageActivity extends AppCompatActivity {
                                     recyclerView.scrollToPosition(comments.size() - 1);
                                 }
                             });
-                    } else {
-                        notifyDataSetChanged();
-                        recyclerView.scrollToPosition(comments.size() - 1);
-                    }
                 }
 
                 @Override
